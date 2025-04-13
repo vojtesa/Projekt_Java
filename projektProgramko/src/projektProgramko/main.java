@@ -2,6 +2,8 @@ package projektProgramko;
 
 import java.util.Scanner;
 
+import javax.swing.JEditorPane;
+
 public class main {
 	public static void main(String[] args) {
 		boolean programBezi = true;
@@ -17,7 +19,9 @@ public class main {
 			System.out.println("5...Vypsat studenty serazene podle prijmeni");
 			System.out.println("6...Vypsat prumer studentu");
 			System.out.println("7...Vypsat pocet studentu ve skupinach");
-			
+			System.out.println("8...Spustit dovednost");
+			System.out.println("9...Ulozit studenta do textoveho souboru");
+			System.out.println("10...Nacist studenta z textoveho souboru");
 			try {
 				volba = sc.nextInt();				
 			}
@@ -28,8 +32,7 @@ public class main {
 			}
 			
 			
-			
-			
+
 			switch(volba) {
 				case 1: //pridani studenta
 					
@@ -43,7 +46,7 @@ public class main {
 						jmeno = Vyjimky.pouzePismena(sc.next());
 						prijmeni = Vyjimky.pouzePismena(sc.next());
 						rokNarozeni = sc.nextInt();
-						System.out.println("Zadejte skupinu Komunikace/Kyberbezpecnost(Type in 1/2): ");
+						System.out.println("Zadejte skupinu Telekomunikace/Kyberbezpecnost(Type in 1/2): ");
 						skupina = sc.nextInt();
 					}
 					catch(Exception e) {
@@ -94,16 +97,7 @@ public class main {
 					Integer inputID = sc.nextInt();
 					switch(Vyjimky.doesStudentExist(inputID)){
 						case 1:
-							Student vybranyStudentString = Databaze.databaze.get(inputID);
-							System.out.println("\n" + "ID: " + vybranyStudentString.getID());
-							System.out.println("Skupina: " + vybranyStudentString.getSkupina());
-							System.out.println("Jmeno: " + vybranyStudentString.getJmeno());
-							System.out.println("Prijmeni: " + vybranyStudentString.getPrijmeni());
-							System.out.println("Rok narozeni: " + vybranyStudentString.getRokNarozeni());
-							System.out.print("Znamky: ");
-							vybranyStudentString.vypisZnamek();
-							System.out.print("      Prumer: " + vybranyStudentString.getPrumer());
-							System.out.println("\n\n");//odradkovani
+							System.out.println(Funkce.vypisInfoOStudentovi(inputID));
 							break;
 						case -1:
 							System.out.println("Student jiz byl vyloucen");
@@ -157,6 +151,38 @@ public class main {
 					break;
 				case 7:	//vypis poctu studentu ve skupinach
 					Funkce.pocetStudentuVeSkupine();
+					
+					break;
+					
+				case 8: //dovednost studenta
+					System.out.println("Zadejte ID studenta, jehoz dovednost chcete spustit: ");
+					try{
+						Integer ID = sc.nextInt();
+						Databaze.databaze.get(ID).dovednost();
+					}
+					catch(Exception e) {
+						System.out.println(e.getMessage());
+					}
+					
+					break;
+				case 9:
+					System.out.println("Zadejte ID studenta, ktereho chcete ulozit do souboru: ");
+					try {
+						Funkce.ulozeniStudentaDoSouboru(sc.nextInt());
+					}
+					catch(Exception e) {
+						System.out.println(e.getMessage());
+					}
+				
+				case 10:
+					System.out.println("Zadejte ID studenta, ktereho chcete nacist ze souboru: ");
+					try{
+						Integer ID = sc.nextInt();
+						Funkce.nacteniStudentaZeSouboru(ID);
+					}
+					catch(Exception e) {
+						System.out.println(e.getMessage());
+					}
 					}
 			}
 				

@@ -1,5 +1,8 @@
 package projektProgramko;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -45,7 +48,6 @@ public class Funkce {
 	
 	
 	
-	
 	public static void vypisStudentu(Integer cislo) {
 		List<Student> sortedStudentsbysurname = new ArrayList<Student>();
 		Student student;
@@ -84,14 +86,7 @@ public class Funkce {
 				if(skupina.isInstance(student)) {
 					//porovna, zda je student z prave zvolene tridy
 					System.out.println( nTyStudent + ".Student " + student.getPrijmeni() + ":");
-					System.out.println("ID: " + student.getID());
-					System.out.println("Jmeno: " + student.getJmeno());
-					System.out.println("Prijmeni: " + student.getPrijmeni());
-					System.out.println("Rok narozeni: " + student.getRokNarozeni());
-					System.out.print("Znamky: ");
-					student.vypisZnamek();
-					System.out.print("      Prumer: " + student.getPrumer());
-					System.out.println("\n");//odradkovani
+					vypisInfoOStudentovi(student);
 					nTyStudent++;
 				}
 				else {
@@ -102,6 +97,7 @@ public class Funkce {
 			
 		
 	}
+	
 	
 	
 	public static void pocetStudentuVeSkupine() {
@@ -120,6 +116,72 @@ public class Funkce {
 		System.out.println("Ve skupine Telekomunikace je studentu: " + counterTelekomunikace);
 		System.out.println("Ve skupine Kyberbezpecnost je studentu: " + counterKyberbezpecnost);
 		System.out.println("Celkove je studentu: " + (counterTelekomunikace + counterKyberbezpecnost) + "\n");
+	}
+
+
+	
+	public static void ulozeniStudentaDoSouboru(Integer ID) {
+		Student vybranyStudent = Databaze.databaze.get(ID);
+		try {
+			String nazevSouboru = vybranyStudent.getJmeno() + "_" + vybranyStudent.getPrijmeni() + ".txt";
+			FileWriter fw = new FileWriter(nazevSouboru);
+			String vypis = vypisInfoOStudentovi(ID);
+			fw.write(vypis);
+			fw.close();
+			System.out.println("Student byl uspesne ulozen do souboru " + nazevSouboru);
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	
+	
+	public static void nacteniStudentaZeSouboru(Integer ID) {
+		Student student =  Databaze.databaze.get(ID);
+		String nazevSouboru = student.getJmeno() + "_" + student.getPrijmeni() + ".txt";
+		if (nazevSouboru.contains(".txt")){		//pokud uzivatel zada priponu .txt
+			try {
+				FileReader fr = new FileReader(nazevSouboru);
+				fr.close();
+			} catch (Exception e) {
+				System.out.println("Soubor se studentem s ID " + ID + "neexistuje");
+			}
+		}		
+	}
+	
+	
+	
+	
+	public static String vypisInfoOStudentovi(Object klicNeboObjekt) {
+	    StringBuilder vystup = new StringBuilder();
+
+	    if (klicNeboObjekt instanceof Integer) {
+	        Integer ID = (Integer) klicNeboObjekt;
+	        Student student = Databaze.databaze.get(ID);
+
+	        if (student == null) return "Student s ID " + ID + " nebyl nalezen.";
+
+	        vystup.append("\nID: ").append(student.getID());
+	        vystup.append("\nSkupina: ").append(student.getSkupina());
+	        vystup.append("\nJméno: ").append(student.getJmeno());
+	        vystup.append("\nPříjmení: ").append(student.getPrijmeni());
+	        vystup.append("\nRok narození: ").append(student.getRokNarozeni());
+	        vystup.append("\nZnámky: ").append(student.vypisZnamek());
+	        vystup.append("      Průměr: ").append(student.getPrumer()).append("\n");
+	    } 
+	    else if (klicNeboObjekt instanceof Student student) {
+	        vystup.append("\nID: ").append(student.getID());
+	        vystup.append("\nSkupina: ").append(student.getSkupina());
+	        vystup.append("\nJméno: ").append(student.getJmeno());
+	        vystup.append("\nPříjmení: ").append(student.getPrijmeni());
+	        vystup.append("\nRok narození: ").append(student.getRokNarozeni());
+	        vystup.append("\nZnámky: ").append(student.vypisZnamek());
+	        vystup.append("      Průměr: ").append(student.getPrumer()).append("\n");
+	    } 
+	    else {
+	        return "Do metody byl zadán parametr, se kterým metoda nedokáže pracovat.";
+	    }
+	    return vystup.toString();
 	}
 }
 

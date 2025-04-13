@@ -27,10 +27,12 @@ public abstract class Student {
 		}
 	} 
 	
-	public void vypisZnamek() {
+	public String vypisZnamek() {
+		StringBuilder vystup = new StringBuilder();
 		for (Double jednaZnamka:znamky) {
-			System.out.print(jednaZnamka + ", ");
+			vystup.append(jednaZnamka).append( ", ");
 		}
+		return vystup.toString();
 	}
 	
 	public Double getPrumer() {
@@ -47,7 +49,7 @@ public abstract class Student {
 		return false; // TODO
 	}
 	
-	public abstract String dovednost(Integer ID);
+	public abstract void dovednost();
 
 	
 	public void setID() {
