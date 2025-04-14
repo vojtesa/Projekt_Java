@@ -1,5 +1,6 @@
 package projektProgramko;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -86,7 +87,7 @@ public class Funkce {
 				if(skupina.isInstance(student)) {
 					//porovna, zda je student z prave zvolene tridy
 					System.out.println( nTyStudent + ".Student " + student.getPrijmeni() + ":");
-					vypisInfoOStudentovi(student);
+					System.out.println(vypisInfoOStudentovi(student));
 					nTyStudent++;
 				}
 				else {
@@ -122,34 +123,60 @@ public class Funkce {
 	
 	public static void ulozeniStudentaDoSouboru(Integer ID) {
 		Student vybranyStudent = Databaze.databaze.get(ID);
+		FileWriter fw = null;
 		try {
 			String nazevSouboru = vybranyStudent.getJmeno() + "_" + vybranyStudent.getPrijmeni() + ".txt";
-			FileWriter fw = new FileWriter(nazevSouboru);
+			fw = new FileWriter(nazevSouboru);
 			String vypis = vypisInfoOStudentovi(ID);
 			fw.write(vypis);
-			fw.close();
+			
 			System.out.println("Student byl uspesne ulozen do souboru " + nazevSouboru);
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
+		}
+		finally {
+			try {
+				fw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	
 	
-	public static void nacteniStudentaZeSouboru(Integer ID) {
+	public static String nacteniStudentaZeSouboru(Integer ID) {
 		Student student =  Databaze.databaze.get(ID);
 		String nazevSouboru = student.getJmeno() + "_" + student.getPrijmeni() + ".txt";
+		String textovyVystup = null;
 		if (nazevSouboru.contains(".txt")){		//pokud uzivatel zada priponu .txt
+			FileReader fr = null;
+			BufferedReader in = null;
 			try {
-				FileReader fr = new FileReader(nazevSouboru);
-				fr.close();
+				 fr = new FileReader(nazevSouboru);
+				 in = new BufferedReader(fr);
+				 String radek;
+				 while((radek = in.readLine()) != null) {
+					 textovyVystup += radek + "\n";
+				 }
+				 return textovyVystup;
+				
 			} catch (Exception e) {
-				System.out.println("Soubor se studentem s ID " + ID + "neexistuje");
+				return e.getMessage();
 			}
-		}		
+			finally {
+				try {
+					fr.close();
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+					
+				}
+			}
+		}
+		return "Soubor nelze precist, nebo neexistuje";
 	}
-	
-	
+
 	
 	
 	public static String vypisInfoOStudentovi(Object klicNeboObjekt) {
@@ -159,7 +186,7 @@ public class Funkce {
 	        Integer ID = (Integer) klicNeboObjekt;
 	        Student student = Databaze.databaze.get(ID);
 
-	        if (student == null) return "Student s ID " + ID + " nebyl nalezen.";
+	        //if (student == null) return "Student s ID " + ID + " nebyl nalezen.";		TODO podivat se, jestli to tu k necemu je
 
 	        vystup.append("\nID: ").append(student.getID());
 	        vystup.append("\nSkupina: ").append(student.getSkupina());

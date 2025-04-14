@@ -12,6 +12,7 @@ public class main {
 		int volba;
 		
 		while(programBezi) {
+					//vycisteni vstupu
 			System.out.println("1...Pridat studenta");
 			System.out.println("2...Nastavit studentovi znamku");
 			System.out.println("3...Vypis informaci o studentovi");
@@ -21,17 +22,17 @@ public class main {
 			System.out.println("7...Vypsat pocet studentu ve skupinach");
 			System.out.println("8...Spustit dovednost");
 			System.out.println("9...Ulozit studenta do textoveho souboru");
-			System.out.println("10...Nacist studenta z textoveho souboru");
+			System.out.println("10...Nacist a vypsat studenta z textoveho souboru");
+			
 			try {
-				volba = sc.nextInt();				
+				volba = sc.nextInt();
+				sc.nextLine();
 			}
 			catch(Exception e) {
-				System.out.println("Nezadali jste spravne cislo pro vyber z menu");
+				System.out.println("Nezadali jste CISLO pro vyber z menu");
 				sc.nextLine();
 				continue;
 			}
-			
-			
 
 			switch(volba) {
 				case 1: //pridani studenta
@@ -45,7 +46,7 @@ public class main {
 					try {
 						jmeno = Vyjimky.pouzePismena(sc.next());
 						prijmeni = Vyjimky.pouzePismena(sc.next());
-						rokNarozeni = sc.nextInt();
+						rokNarozeni = sc.nextInt(); sc.nextLine();
 						System.out.println("Zadejte skupinu Telekomunikace/Kyberbezpecnost(Type in 1/2): ");
 						skupina = sc.nextInt();
 					}
@@ -69,7 +70,7 @@ public class main {
 					}
 					break;
 					
-				case 2: //nastaveni prumeru studentovi 
+				case 2: //nastaveni znamky studentovi 
 					System.out.println("Zadejte ID studenta, kteremu chcete nastavit znamku: ");
 					Integer IDtoSetGrade;
 					try {
@@ -77,41 +78,37 @@ public class main {
 					}
 					catch(Exception e) {
 						System.out.println("Chybny vstup pro ID");
+						skupina = sc.nextInt();
 						break;
 					}
 					System.out.println("Zadejte znamku: ");
 					Double grade;
 					try {
-						grade = sc.nextDouble();
+						grade = sc.nextDouble(); sc.nextLine();
 						Student setPrumerStudent = Databaze.databaze.get(IDtoSetGrade);						
 						setPrumerStudent.setZnamka(grade);											
 					}
 					catch(Exception e) {
-						Vyjimky.doesStudentExist(IDtoSetGrade);
+						System.out.println("Znamka byla zadana ve spatnem formatu");
+						sc.nextLine();
 					}				
-					break;
+					break;	
+					
 					
 				case 3: //vypis info o studentovi
 					
 					System.out.println("Zadejte ID studenta: ");
-					Integer inputID = sc.nextInt();
-					switch(Vyjimky.doesStudentExist(inputID)){
-						case 1:
-							System.out.println(Funkce.vypisInfoOStudentovi(inputID));
-							break;
-						case -1:
-							System.out.println("Student jiz byl vyloucen");
-							break;
-						case 0:
-							System.out.println("Student neexistuje");
-							break;
+					Integer inputID = sc.nextInt(); sc.nextLine();
+										
+					if(Vyjimky.doesStudentExist(inputID) == 1){
+						System.out.println(Funkce.vypisInfoOStudentovi(inputID));						
 					}
 					break;
 					
 				case 4: //vyhozeni studenta
 					
 					System.out.println("Zadejte ID studenta, ktereho chcete vyloucit: ");
-					Integer IDtoDismiss = sc.nextInt();
+					Integer IDtoDismiss = sc.nextInt(); sc.nextLine();
 
 					switch(Vyjimky.doesStudentExist(IDtoDismiss)){
 						case 1:
@@ -130,7 +127,7 @@ public class main {
 				case 5: //vypis vsech studentu podle skupiny a prijmeni
 					System.out.println("Zadejte skupinu, kterou chcete vypsat Komunikace/Kyberbezpecnost/Vsechny(Type in 1/2/3): ");
 					try{
-						Integer skupinaProVypis = sc.nextInt();
+						Integer skupinaProVypis = sc.nextInt(); sc.nextLine();
 						Funkce.vypisStudentu(skupinaProVypis);
 						
 						}
@@ -142,7 +139,7 @@ public class main {
 				case 6:	//vypis prumeru vsech studentu podle skupiny
 					System.out.println("Zadejte skupinu, ktere chcete vypsat prumer Komunikace/Kyberbezpecnost/Vsech(Type in 1/2/3): ");
 					try {
-						Integer skupinaProPrumer = sc.nextInt();
+						Integer skupinaProPrumer = sc.nextInt(); sc.nextLine();
 						Funkce.vypisPrumeruStudentu(skupinaProPrumer);
 					}
 					catch(Exception e) {
@@ -157,7 +154,7 @@ public class main {
 				case 8: //dovednost studenta
 					System.out.println("Zadejte ID studenta, jehoz dovednost chcete spustit: ");
 					try{
-						Integer ID = sc.nextInt();
+						Integer ID = sc.nextInt(); sc.nextLine();
 						Databaze.databaze.get(ID).dovednost();
 					}
 					catch(Exception e) {
@@ -165,7 +162,7 @@ public class main {
 					}
 					
 					break;
-				case 9:
+				case 9:		//ulozeni studenta do souboru
 					System.out.println("Zadejte ID studenta, ktereho chcete ulozit do souboru: ");
 					try {
 						Funkce.ulozeniStudentaDoSouboru(sc.nextInt());
@@ -173,16 +170,21 @@ public class main {
 					catch(Exception e) {
 						System.out.println(e.getMessage());
 					}
+					break;
 				
-				case 10:
+				case 10:	//nacteni studenta do souboru
 					System.out.println("Zadejte ID studenta, ktereho chcete nacist ze souboru: ");
 					try{
-						Integer ID = sc.nextInt();
-						Funkce.nacteniStudentaZeSouboru(ID);
+						Integer ID = sc.nextInt(); sc.nextLine();
+						System.out.println(Funkce.nacteniStudentaZeSouboru(ID));
 					}
 					catch(Exception e) {
 						System.out.println(e.getMessage());
 					}
+					break;
+					
+				default:
+					System.out.println("Nezadali jste platne cislo v rozsahu pro vyber z menu");
 					}
 			}
 				
