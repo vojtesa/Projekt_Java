@@ -86,7 +86,7 @@ public class Funkce {
 			
 				if(skupina.isInstance(student)) {
 					//porovna, zda je student z prave zvolene tridy
-					System.out.println( nTyStudent + ".Student " + student.getPrijmeni() + ":");
+					System.out.println( "\n" + nTyStudent + ".Student " + student.getPrijmeni() + ":");
 					System.out.println(vypisInfoOStudentovi(student));
 					nTyStudent++;
 				}
@@ -132,12 +132,13 @@ public class Funkce {
 			
 			System.out.println("Student byl uspesne ulozen do souboru " + nazevSouboru);
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
+			System.out.println("Student nelze ulozit: " + Vyjimky.doesStudentExist(ID));
 		}
 		finally {
 			try {
 				fw.close();
-			} catch (IOException e) {
+			} catch (IOException e) {		
+				System.out.print("Soubor nejde zavrit: ");
 				e.printStackTrace();
 			}
 		}
@@ -148,33 +149,31 @@ public class Funkce {
 	public static String nacteniStudentaZeSouboru(Integer ID) {
 		Student student =  Databaze.databaze.get(ID);
 		String nazevSouboru = student.getJmeno() + "_" + student.getPrijmeni() + ".txt";
-		String textovyVystup = null;
-		if (nazevSouboru.contains(".txt")){		//pokud uzivatel zada priponu .txt
-			FileReader fr = null;
-			BufferedReader in = null;
+		String textovyVystup = "";		
+		
+		FileReader fr = null;
+		BufferedReader in = null;
+		try {
+			 fr = new FileReader(nazevSouboru);
+			 in = new BufferedReader(fr);
+			 String radek;
+			 while((radek = in.readLine()) != null) {
+				 textovyVystup += radek + "\n";
+			 }
+			 return textovyVystup;
+			
+		} catch (Exception e) {
+			return "Soubor nelze precist, nebo neexistuje: " + e.getMessage();
+		}
+		finally {
 			try {
-				 fr = new FileReader(nazevSouboru);
-				 in = new BufferedReader(fr);
-				 String radek;
-				 while((radek = in.readLine()) != null) {
-					 textovyVystup += radek + "\n";
-				 }
-				 return textovyVystup;
+				fr.close();
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
 				
-			} catch (Exception e) {
-				return e.getMessage();
-			}
-			finally {
-				try {
-					fr.close();
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-					
-				}
 			}
 		}
-		return "Soubor nelze precist, nebo neexistuje";
 	}
 
 	

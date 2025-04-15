@@ -74,11 +74,12 @@ public class main {
 					System.out.println("Zadejte ID studenta, kteremu chcete nastavit znamku: ");
 					Integer IDtoSetGrade;
 					try {
-						IDtoSetGrade = sc.nextInt();	
+						if (Vyjimky.doesStudentExist(IDtoSetGrade = sc.nextInt()) != 1) {
+							break;
+						}
 					}
 					catch(Exception e) {
 						System.out.println("Chybny vstup pro ID");
-						skupina = sc.nextInt();
 						break;
 					}
 					System.out.println("Zadejte znamku: ");
@@ -110,17 +111,9 @@ public class main {
 					System.out.println("Zadejte ID studenta, ktereho chcete vyloucit: ");
 					Integer IDtoDismiss = sc.nextInt(); sc.nextLine();
 
-					switch(Vyjimky.doesStudentExist(IDtoDismiss)){
-						case 1:
-							System.out.println("Student s ID " + IDtoDismiss + " byl uspesne vyloucen\n");
-							break;
-						case -1:
-							System.out.println("Student nelze vyloucit - byl jiz byl vyloucen");
-							break;
-						case 0:
-							System.out.println("Student nejde vyloucit - neexistuje");
-							break;
-						}
+					if (Vyjimky.doesStudentExist(IDtoDismiss) != 1) {
+						break;
+					}
 					Databaze.databaze.remove(IDtoDismiss);
 					break;
 					
@@ -165,7 +158,12 @@ public class main {
 				case 9:		//ulozeni studenta do souboru
 					System.out.println("Zadejte ID studenta, ktereho chcete ulozit do souboru: ");
 					try {
-						Funkce.ulozeniStudentaDoSouboru(sc.nextInt());
+						Integer vstup = sc.nextInt();
+						if(Vyjimky.doesStudentExist(vstup) == 1) {
+							Funkce.ulozeniStudentaDoSouboru((vstup));
+							break;
+						}
+						
 					}
 					catch(Exception e) {
 						System.out.println(e.getMessage());
