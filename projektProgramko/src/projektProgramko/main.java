@@ -23,6 +23,7 @@ public class main {
 			System.out.println("8...Spustit dovednost");
 			System.out.println("9...Ulozit studenta do textoveho souboru");
 			System.out.println("10...Nacist a vypsat studenta z textoveho souboru");
+			System.out.println("11...Ulozit studenty do databaze");
 			
 			try {
 				volba = sc.nextInt();
@@ -181,6 +182,10 @@ public class main {
 					}
 					break;
 					
+				case 11:
+					SQL.connect();
+					SQL.disconnect();
+					break;
 				default:
 					System.out.println("Nezadali jste platne cislo v rozsahu pro vyber z menu");
 					}
